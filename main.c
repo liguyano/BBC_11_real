@@ -102,7 +102,7 @@ void disPlay()
                 t_disPlay[4]=SMG_duanma[time[1]&0x0f];
             } else
             {
-
+                //para[0]=re_para[0];
                 t_disPlay[0]=otherDuan[2];
                 t_disPlay[1]=SMG_duanma[1];
                 for (i=2;i<=5;++i)
@@ -165,8 +165,9 @@ void disPlay()
     }
     for (i=0;i<8;i++)
     {
+
         DIAPlaySMG_Bit(t_disPlay[i],i);
-        Delay(100);
+        Delay(50);
     }
 
 }
@@ -186,17 +187,16 @@ void main()
     {
         key=get_key();
         if (key<17) {
-            Delay(10);
+            Delay(20);
             switch (key) {
                 case 4:
                     D=~D;
                     if(D)
                     {
                         if (para[0]>=10)
-                            re_para[0]=16;
+                            re_para[0]=para[0]+6;
                         else
-                            re_para[0]=0;
-                        re_para[0] += (para[0]%10);
+                            re_para[0]=para[0];
                         re_para[1]=para[1];
                         re_para[2]=para[2];
                     }
@@ -236,7 +236,6 @@ void time0() interrupt NUM1
     }
     if (t>400)
     {
-
         temp=rd_temperature();
         voltage= pcf_read(0x41);
         time[0]= Read_Ds1302_Byte(0x85);
