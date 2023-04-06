@@ -169,16 +169,6 @@ void disPlay()
     }
 
 }
-void showIntNUm(unsigned int num)
-{
-    unsigned char i,s;
-    for (i=1;i<6;i++)
-    {
-        s=num/ pow(10.0,5.0-i*1.0);
-        num %= (unsigned int ) pow(10.0,5.0-i);
-        t_disPlay[i-1]=SMG_duanma[s];
-    }
-}
 void main()
 {
     unsigned char key;
