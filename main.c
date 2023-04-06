@@ -9,6 +9,7 @@ static unsigned char mode=0;
 static bit D=1;
 static bit Light =0;
 static bit pre_Light =1;
+static bit changed=0;
 static uchar lightTime=0;
 // time temporotry light
 static uint temp=567;
@@ -74,7 +75,7 @@ void Timer0_Init(void)		//100us@11.0592MHz
     AUXR &= 0x7F;			//Timer clock is 12T mode
     TMOD &= 0xF0;			//Set timer work mode
     TMOD |= 0x01;			//Set timer work mode
-    TL0 = 0x66;				//Initial timer value
+    TL0 = 0x18;				//Initial timer value
     TH0 = 0xFC;				//Initial timer value
     TF0 = 0;				//Clear TF0 flag
     TR0 = 1;				//Timer0 start run
@@ -122,8 +123,8 @@ void disPlay()
                     t_disPlay[i]=0xff;
                 }
                 t_disPlay[0]=otherDuan[0];
-                t_disPlay[5]=SMG_duanma[temp/1000]&0x7f;
-                t_disPlay[6]=SMG_duanma[(temp%1000)/100];
+                t_disPlay[5]=SMG_duanma[temp/1000];
+                t_disPlay[6]=SMG_duanma[(temp%1000)/100]&0x7f;
                 t_disPlay[7]=SMG_duanma[(temp%100)/10];
             } else
             {
@@ -177,6 +178,9 @@ void main()
     P0=0xff;
     P2&=0x1f;
     Timer0_Init();
+    SelectHC573(5);
+    P06=0;
+    P2&=0x1f;
     init_ds1302(0x16,0x59,0x50);
     while (1)
     {
@@ -226,13 +230,15 @@ void time0() interrupt NUM1
 {
     static uint t;
     t++;
-    if (!(t%100) && lightTime!=0)
+    if (!(t%100) && changed)
     {
         lightTime++;
     }
     if (t>400)
-    { temp=rd_temperature();
-        voltage= pcf_read(0x43);
+    {
+
+        temp=rd_temperature();
+        voltage= pcf_read(0x41);
         time[0]= Read_Ds1302_Byte(0x85);
         time[0]<<=3;
         time[0]>>=3;
@@ -259,38 +265,32 @@ void time0() interrupt NUM1
         light|=0xf0;
         pre_Light=Light;
         if (voltage==0)
-        {Light=1;
-            if (lightTime>=30 || lightTime==0)
-            {open_light:
-                // open light.
-                light &= 0xfb;
-                light&= _crol_(0xfe,re_para[2]-1);
-                lightTime=0;
-            }
-        } else
-        {Light=0;
-            //close light
-            if (lightTime>=30 || lightTime==0)
-            {close_light:
-                light |= 0x04;
-                lightTime=0;
-            }
-
-        }
+        {Light=1;} else{Light=0;}
         if (pre_Light!=Light)
         {
-            if (lightTime==0)
+            if (changed)
             {
-                lightTime=1;
+                if (lightTime>30)
+                {
+                    if (Light)
+                    {
+                        // open light.
+                        light &= 0xfb;
+                        light&= _crol_(0xfe,re_para[2]-1);
+                        lightTime=0;
+                    } else
+                    {
+                        light |= 0x04;
+                        light |= _crol_(0x01,re_para[2]-1);
+                        lightTime=0;
+                    }
+                    lightTime=0;
+                    changed=0;
+                }
             } else
             {
-                lightTime=0;
+                changed=1;
             }
-            pre_Light=Light;
-            if (Light)
-                goto close_light;
-            else
-                goto open_light;
         }
         t=0;
         SelectHC573(4);
@@ -298,7 +298,7 @@ void time0() interrupt NUM1
         P2&=0x1f;
 
     }
-    TL0 = 0x66;				//Initial timer value
+    TL0 = 0x18;				//Initial timer value
     TH0 = 0xFC;				//Initial timer value
 
 }

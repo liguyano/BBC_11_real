@@ -1,9 +1,7 @@
 Build target 'Target 1'
-linking...
+compiling main.c...
+ÿþlinking...
 ÿ*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SHOWINTNUM?MAIN
-
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_OPERATE_DELAY?I2C
 
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -12,7 +10,7 @@ linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_PCF_WRITE?PCF8591
 
-Program Size: data=60.5 xdata=0 code=4121
+Program Size: data=42.4 xdata=0 code=2544
 þcreating hex file from ".\Objects\Project"...
-ÿþ".\Objects\Project" - 0 Error(s), 4 Warning(s).
+ÿþ".\Objects\Project" - 0 Error(s), 3 Warning(s).
 Build Time Elapsed:  00:00:00
