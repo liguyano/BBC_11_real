@@ -264,32 +264,32 @@ void time0() interrupt NUM1
         }
         light|=0xf0;
         pre_Light=Light;
-        if (voltage==0)
-        {Light=1;} else{Light=0;}
+        Light = voltage==0?1:0;
         if (pre_Light!=Light)
         {
             if (changed)
             {
-                if (lightTime>30)
-                {
-                    if (Light)
-                    {
-                        // open light.
-                        light &= 0xfb;
-                        light&= _crol_(0xfe,re_para[2]-1);
-                        lightTime=0;
-                    } else
-                    {
-                        light |= 0x04;
-                        light |= _crol_(0x01,re_para[2]-1);
-                        lightTime=0;
-                    }
-                    lightTime=0;
-                    changed=0;
-                }
+                changed=0;
+                lightTime=0;
             } else
-            {
                 changed=1;
+
+        }
+        if (changed) {
+            if (lightTime > 30) {
+                if (Light) {
+                    // open light.
+                    light &= 0xfb;
+                    light &= _crol_(0xfe, re_para[2] - 1);
+                    lightTime = 0;
+                } else {
+                    //close light.
+                    light |= 0x04;
+                    light |= _crol_(0x01, re_para[2] - 1);
+                    lightTime = 0;
+                }
+                lightTime = 0;
+                changed = 0;
             }
         }
         t=0;
