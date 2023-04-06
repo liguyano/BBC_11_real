@@ -2,6 +2,7 @@
 11年的真题  
 how to calculate 30s;
 ## update in 令和5年4月6日 15:09:25
+the L1 light work properly.  
 try use this remove the SEG shadow but failed.
 ```c
         DIAPlaySMG_Bit(0xff,i);
